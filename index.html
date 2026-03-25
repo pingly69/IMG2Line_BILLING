@@ -13,234 +13,199 @@
         :root { --primary: #00b900; --bg: #f4f4f7; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 10px; }
         .app-container { max-width: 500px; margin: auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .header { background: var(--primary); color: white; padding: 16px; text-align: center; font-size: 18px; font-weight: bold; }
-        .content { padding: 16px; }
-        
-        .upload-area { border: 2px dashed #ccc; border-radius: 12px; padding: 24px; text-align: center; background: #fafafa; cursor: pointer; margin-bottom: 20px; transition: 0.3s; position: relative; }
-        .upload-area:active { background: #f0f0f0; border-color: var(--primary); }
-        .upload-area i { font-size: 40px; color: #999; margin-bottom: 10px; }
-        .upload-area .btn-small { background: white; border: 1px solid #ddd; padding: 6px 16px; border-radius: 20px; font-size: 14px; margin-top: 10px; display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        
-        .preview-img { max-width: 100%; max-height: 200px; border-radius: 8px; display: none; margin: 0 auto 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        
-        .form-section { background: white; }
-        /* กลับมาใช้ Grid ต้นฉบับเดิมของคุณ */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-        .full-width { grid-column: span 2; }
-        
-        /* กลับมาใช้ CSS ต้นฉบับเดิมของคุณ */
-        .input-group { display: flex; flex-direction: column; }
-        .label { font-size: 12px; color: #666; margin-bottom: 4px; font-weight: 500; }
-        input, select { padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; background: #fff; transition: 0.2s; }
-        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(0,185,0,0.1); }
-        
-        .btn-submit { background: var(--primary); color: white; border: none; padding: 14px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,185,0,0.2); }
-        .btn-submit:active { transform: scale(0.98); }
-        .btn-submit:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
-        
-        .status-box { margin-top: 15px; padding: 12px; border-radius: 8px; font-size: 14px; text-align: center; display: none; }
-        .status-box.show { display: block; }
-        .status-loading { background: #e3f2fd; color: #1976d2; }
-        .status-success { background: #e8f5e9; color: #2e7d32; }
-        .status-error { background: #ffebee; color: #c62828; }
-
-        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.1); border-radius: 50%; border-top-color: currentColor; animation: spin 1s ease-in-out infinite; vertical-align: middle; margin-right: 8px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .header { background: var(--primary); color: white; padding: 20px 15px; display: flex; align-items: center; gap: 10px; }
+        .header h3 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+        .ai-banner { background: #e8f5e9; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #c8e6c9; }
+        .ai-banner b { font-size: 15px; color: #2e7d32; display: flex; align-items: center; gap: 8px; }
+        form { padding: 15px; }
+        .row { display: flex; gap: 12px; margin-bottom: 15px; flex-wrap: wrap; }
+        .field { flex: 1; min-width: 140px; }
+        label { display: block; font-size: 13px; margin-bottom: 6px; color: #444; font-weight: 700; }
+        input, select { width: 100%; padding: 13px; border: 1.5px solid #e0e0e0; border-radius: 10px; box-sizing: border-box; font-size: 15px; transition: border 0.2s; }
+        input:focus { border-color: var(--primary); outline: none; }
+        .file-box { border: 2px dashed var(--primary); padding: 35px 20px; text-align: center; border-radius: 14px; cursor: pointer; position: relative; background: #fafafa; margin-bottom: 20px; }
+        .file-box i { color: var(--primary); margin-bottom: 10px; }
+        .loading-overlay { display: none; position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(255,255,255,0.9); border-radius: 12px; align-items: center; justify-content: center; flex-direction: column; z-index: 10; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 35px; height: 35px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        button { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 17px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 8px rgba(0,185,0,0.2); }
+        button:active { transform: scale(0.98); }
+        .status-msg { text-align: center; margin-top: 12px; font-size: 15px; min-height: 24px; font-weight: 500; }
+        .ai-toggle-wrapper { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        #aiToggle { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <div class="header"><i class="fas fa-file-invoice-dollar"></i> ระบบบันทึกบิล (AI)</div>
-        <div class="content">
-            <!-- Upload Section -->
-            <div class="upload-area" id="uploadBtn" onclick="document.getElementById('fileInput').click()">
-                <img id="preview" class="preview-img" alt="Preview">
-                <div id="uploadPlaceholder">
-                    <i class="fas fa-camera"></i>
-                    <div style="font-weight: bold; color: #333;">ถ่ายรูป / เลือกบิลเสร็จแล้วรอสักครู่</div>
-                    <div class="btn-small">เลือกไฟล์</div>
-                </div>
-            </div>
-            <input type="file" id="fileInput" accept="image/*" capture="environment" style="display: none" onchange="handleFile(this)">
-
-            <!-- Status -->
-            <div id="aiStatus" class="status-box status-loading"><div class="spinner"></div> AI กำลังอ่านข้อมูล... โปรดรอสักครู่</div>
-
-            <!-- Form -->
-            <div class="grid">
-                <div class="input-group full-width"><div class="label">ชื่อผู้ขาย/บริษัท</div><input type="text" id="sellerName" required></div>
-                <div class="input-group"><div class="label">เลขที่บิล</div><input type="text" id="billNumber" required></div>
-                <div class="input-group"><div class="label">วันที่บิล</div><input type="date" id="billDate" required></div>
-                <div class="input-group"><div class="label">ยอดก่อน VAT</div><input type="number" id="preVat" step="0.01" required></div>
-                <div class="input-group"><div class="label">VAT (บาท)</div><input type="number" id="vatAmount" step="0.01" required></div>
-                <div class="input-group full-width"><div class="label">ยอดรวมสุทธิ (บาท)</div><input type="number" id="totalAmount" step="0.01" required readonly style="background:#e9ecef; font-weight:bold; color:var(--primary);"></div>
-                
-                <!-- จัดลำดับใหม่และขยายเต็มบรรทัดตามที่ร้องขอ -->
-                <div class="input-group full-width"><div class="label">Site/งาน</div><input type="text" id="project" placeholder="-"></div>
-                <div class="input-group full-width"><div class="label">หมายเหตุ/รายการสินค้า</div><input type="text" id="remark" placeholder="-"></div>
-                <div class="input-group"><div class="label">ชื่อผู้เบิก</div><input type="text" id="requesterName" required></div>
-                <div class="input-group">
-                    <div class="label">ผู้อนุมัติ</div>
-                    <select id="approverName" required>
-                        <option value="">กำลังโหลด...</option>
-                    </select>
-                </div>
-            </div>
-
-            <button class="btn-submit" id="submitBtn" onclick="submitData()">
-                <i class="fas fa-save"></i> บันทึกข้อมูล
-            </button>
-            <div id="saveStatus" class="status-box" style="margin-top: 10px;"></div>
+        <div class="header">
+            <i class="fas fa-file-invoice-dollar fa-lg"></i>
+            <h3>Smart Billing V2.1</h3>
         </div>
+        
+        <div class="ai-banner">
+            <b><i class="fas fa-robot"></i> AI OCR Auto-Fill</b>
+            <div class="ai-toggle-wrapper" onclick="document.getElementById('aiToggle').click(); event.stopPropagation();">
+                <input type="checkbox" id="aiToggle" checked onclick="event.stopPropagation();">
+            </div>
+        </div>
+
+        <form id="taxForm">
+            <div class="file-box" onclick="document.getElementById('billFile').click()">
+                <div class="loading-overlay" id="aiLoading">
+                    <div class="spinner"></div>
+                    <div style="margin-top:12px; color:var(--primary); font-weight:bold;">AI กำลังอ่านข้อมูล...</div>
+                </div>
+                <i class="fas fa-camera fa-3x"></i><br>
+                <span id="fileNameDisplay" style="font-weight: 500; color: #666;">กดถ่ายรูปหรืออัพโหลดใบเสร็จ</span>
+                <input type="file" id="billFile" accept="image/*" style="display:none;" onchange="handleFileChange(this)">
+            </div>
+
+            <div class="row">
+                <div class="field"><label>Tax ID ผู้ขาย</label><input type="text" id="taxId" placeholder="เลข 13 หลัก" required></div>
+                <div class="field"><label>ชื่อผู้ขาย</label><input type="text" id="sellerName" required></div>
+            </div>
+            <div class="row">
+                <div class="field"><label>เลขที่ใบกำกับ</label><input type="text" id="billNumber" required></div>
+                <div class="field" style="flex:0.4; min-width: 80px;"><label>สาขา</label><input type="text" id="branchCode" value="00000" required></div>
+            </div>
+            <div class="row">
+                <div class="field"><label>วันที่เอกสาร (Bill Date)</label><input type="date" id="billDate" required></div>
+            </div>
+            <div class="row">
+                <div class="field"><label>ยอดก่อน VAT</label><input type="number" step="0.01" id="preVat" oninput="calculateTotal()" required></div>
+                <div class="field"><label>VAT</label><input type="number" step="0.01" id="vatAmount" oninput="calculateTotal()" required></div>
+            </div>
+            <div class="row">
+                <div class="field"><label>ยอดรวมสุทธิ</label><input type="number" id="totalAmount" readonly style="background:#f0f0f0; font-weight:bold; color:var(--primary);"></div>
+            </div>
+            <div class="row">
+                <div class="field" style="flex:0.6;"><label>Project</label><input type="text" id="projectCode" placeholder="รหัสโครงการ" required></div>
+                <div class="field"><label>ชื่อผู้เบิก</label><input type="text" id="requesterName" required></div>
+            </div>
+            <div class="row">
+                <div class="field">
+                    <label>ผู้อนุมัติ (Approve Request)</label>
+                    <select id="approve_request" required><option value="">-- กำลังโหลดข้อมูล... --</option></select>
+                </div>
+            </div>
+            <div class="row"><div class="field"><label>หมายเหตุ / รายการสินค้า</label><input type="text" id="expenseNote" placeholder="ระบุเพิ่มเติม..."></div></div>
+
+            <button type="button" id="submitBtn" onclick="submitForm()">ยืนยันและบันทึกข้อมูล</button>
+            <div id="status" class="status-msg"></div>
+        </form>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycT-uS84_z7Q3ZJm5K7-D4N87q_qGgqOtsYvE2qD25g27vNlG4T-g2vPqUqU1aB0Q/exec";
-        let base64Image = "";
-        let lineProfile = { displayName: "LIFF User", userId: "Uxxxx" };
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwZa0RYA0IwEPsHvzikLLJww-VCOeDLQ2I1otIwP-HLQh1X5UGVTT1EbAeBOmzBYocE/exec"; 
+        const LIFF_ID = "2009018471-9nBUmUak";
+        let userData = { userId: "", displayName: "", email: "" };
+        let currentFileBase64 = "", currentFileType = "";
 
-        // ย้อนกลับ Code LIFF ให้เป็นต้นฉบับเดิมของคุณ
-        async function initApp() {
+        async function initLIFF() {
             try {
-                await liff.init({ liffId: "2006742548-W8Zxx2jE" });
-                if (liff.isLoggedIn()) {
+                await liff.init({ liffId: LIFF_ID });
+                if (!liff.isLoggedIn()) { liff.login(); } 
+                else {
                     const profile = await liff.getProfile();
-                    lineProfile = profile;
+                    userData = { userId: profile.userId, displayName: profile.displayName, email: liff.getDecodedIDToken()?.email || "" };
                     document.getElementById('requesterName').value = profile.displayName;
+                    loadApprovers();
                 }
-                loadApprovers();
-            } catch (err) {
-                console.error("LIFF Init Failed", err);
-                loadApprovers(); // Load anyway for testing in browser
-            }
+            } catch (err) { console.error("LIFF Init Error:", err); }
         }
-        initApp();
 
-        // ย้อนกลับ Code ดึงรายชื่อผู้อนุมัติให้เป็นต้นฉบับเดิมของคุณ
         async function loadApprovers() {
             try {
-                const res = await fetch(SCRIPT_URL + "?action=getApprovers");
-                const list = await res.json();
-                const sel = document.getElementById('approverName');
-                sel.innerHTML = '<option value="">-- เลือกผู้อนุมัติ --</option>';
-                list.forEach(name => {
-                    sel.innerHTML += `<option value="${name}">${name}</option>`;
-                });
-            } catch(e) { console.error(e); document.getElementById('approverName').innerHTML = '<option value="">โหลดรายชื่อล้มเหลว</option>'; }
-        }
-
-        // Auto Calc VAT
-        document.getElementById('preVat').addEventListener('input', calcTotal);
-        document.getElementById('vatAmount').addEventListener('input', calcTotal);
-        function calcTotal() {
-            const p = parseFloat(document.getElementById('preVat').value) || 0;
-            const v = parseFloat(document.getElementById('vatAmount').value) || 0;
-            document.getElementById('totalAmount').value = (p + v).toFixed(2);
-        }
-
-        function handleFile(input) {
-            const file = input.files[0];
-            if (!file) return;
-
-            // Show Preview
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('preview').src = e.target.result;
-                document.getElementById('preview').style.display = 'block';
-                document.getElementById('uploadPlaceholder').style.display = 'none';
-            };
-            reader.readAsDataURL(file);
-
-            // Process Image
-            document.getElementById('aiStatus').className = 'status-box status-loading show';
-            document.getElementById('submitBtn').disabled = true;
-
-            const processReader = new FileReader();
-            processReader.onload = function() {
-                base64Image = processReader.result.split(',')[1];
-                analyzeImage(base64Image);
-            };
-            processReader.readAsDataURL(file);
-        }
-
-        async function analyzeImage(base64) {
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: "ocr", image: base64 })
-                });
-                const res = await response.json();
-                
-                if (res.status === 'success') {
-                    const data = res.data;
-                    document.getElementById('sellerName').value = data.sellerName || "";
-                    document.getElementById('billNumber').value = data.billNumber || "";
-                    document.getElementById('billDate').value = data.billDate || "";
-                    document.getElementById('preVat').value = data.preVat || 0;
-                    document.getElementById('vatAmount').value = data.vatAmount || 0;
-                    document.getElementById('totalAmount').value = data.totalAmount || 0;
-                    
-                    document.getElementById('aiStatus').className = 'status-box status-success show';
-                    document.getElementById('aiStatus').innerHTML = '<i class="fas fa-check-circle"></i> AI ดึงข้อมูลสำเร็จ! กรุณาตรวจสอบและแก้ไขให้ถูกต้อง';
-                } else {
-                    document.getElementById('aiStatus').className = 'status-box status-error show';
-                    document.getElementById('aiStatus').innerText = '❌ AI อ่านข้อมูลไม่สำเร็จ กรุณากรอกเอง';
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "getApprovers" })});
+                const json = await res.json();
+                if (json.success) {
+                    const select = document.getElementById('approve_request');
+                    select.innerHTML = '<option value="">-- เลือกผู้อนุมัติ --</option>';
+                    json.data.forEach(name => {
+                        const opt = document.createElement('option');
+                        opt.value = name; opt.innerText = name;
+                        select.appendChild(opt);
+                    });
                 }
-            } catch (err) {
-                document.getElementById('aiStatus').className = 'status-box status-error show';
-                document.getElementById('aiStatus').innerText = '❌ เกิดข้อผิดพลาดในการเชื่อมต่อ AI';
-            }
-            document.getElementById('submitBtn').disabled = false;
+            } catch (e) { document.getElementById('status').innerText = "ไม่สามารถโหลดรายชื่อผู้อนุมัติได้"; }
         }
 
-        async function submitData() {
-            const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('saveStatus');
-            
-            // Validate Basic
-            if(!document.getElementById('sellerName').value || !document.getElementById('approverName').value) {
-                alert("กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (ชื่อผู้ขาย และ ผู้อนุมัติ)");
-                return;
-            }
+        window.onload = initLIFF;
 
-            btn.disabled = true;
-            status.className = 'status-box status-loading show';
-            status.innerHTML = '<div class="spinner"></div> กำลังบันทึกข้อมูลและรูปภาพ...';
+        function calculateTotal() {
+            const v1 = parseFloat(document.getElementById('preVat').value) || 0;
+            const v2 = parseFloat(document.getElementById('vatAmount').value) || 0;
+            document.getElementById('totalAmount').value = (v1 + v2).toFixed(2);
+        }
+
+        async function handleFileChange(input) {
+            const file = input.files[0]; if (!file) return;
+            document.getElementById('fileNameDisplay').innerText = file.name;
+            currentFileType = file.type;
+            const reader = new FileReader(); reader.readAsDataURL(file);
+            reader.onload = async () => {
+                currentFileBase64 = reader.result.split(',')[1];
+                if (document.getElementById('aiToggle').checked) {
+                    document.getElementById('aiLoading').style.display = 'flex';
+                    try {
+                        const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "analyze", base64: currentFileBase64, type: file.type })});
+                        const json = await res.json();
+                        if (json.success) {
+                            const d = json.data;
+                            document.getElementById('taxId').value = d.taxId || "";
+                            document.getElementById('sellerName').value = d.sellerName || "";
+                            document.getElementById('billNumber').value = d.billNumber || "";
+                            document.getElementById('billDate').value = d.billDate || "";
+                            document.getElementById('preVat').value = d.preVat || 0;
+                            document.getElementById('vatAmount').value = d.vatAmount || 0;
+                            document.getElementById('expenseNote').value = d.expenseNote || "";
+                            calculateTotal();
+                        } else {
+                            throw new Error(json.message);
+                        }
+                    } catch (e) { 
+                        console.error(e);
+                        alert("AI Error: " + e.message);
+                    }
+                    document.getElementById('aiLoading').style.display = 'none';
+                }
+            };
+        }
+
+        async function submitForm() {
+            const form = document.getElementById('taxForm');
+            if (!form.checkValidity()) { form.reportValidity(); return; }
+            const btn = document.getElementById('submitBtn'); btn.disabled = true;
+            const status = document.getElementById('status'); status.innerText = "⏳ กำลังบันทึกข้อมูล...";
 
             const payload = {
-                action: "save",
+                taxId: document.getElementById('taxId').value,
                 sellerName: document.getElementById('sellerName').value,
+                branchCode: document.getElementById('branchCode').value,
                 billNumber: document.getElementById('billNumber').value,
                 billDate: document.getElementById('billDate').value,
                 preVat: document.getElementById('preVat').value,
                 vatAmount: document.getElementById('vatAmount').value,
                 totalAmount: document.getElementById('totalAmount').value,
-                project: document.getElementById('project').value,
-                remark: document.getElementById('remark').value,
+                projectCode: document.getElementById('projectCode').value,
                 requesterName: document.getElementById('requesterName').value,
-                approverName: document.getElementById('approverName').value,
-                image: base64Image,
-                lineProfile: lineProfile
+                expenseNote: document.getElementById('expenseNote').value,
+                approve_request: document.getElementById('approve_request').value,
+                fileBase64: currentFileBase64, fileType: currentFileType,
+                lineUserId: userData.userId, lineEmail: userData.email
             };
 
             try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                const json = await response.json();
-
-                if (json.status === "success") {
-                    status.className = 'status-box status-success show';
-                    status.innerHTML = '<i class="fas fa-check-circle"></i> บันทึกสำเร็จ!';
+                const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "submit", formData: payload })});
+                const json = await res.json();
+                if (json.success) {
+                    status.innerHTML = "<b style='color:green;'>✅ บันทึกสำเร็จ!</b>";
                     
+                    // --- ส่วนที่ดึงกลับมาจากรูปภาพ: ส่งข้อความสรุปกลับเข้า Line Chat ---
                     if (liff.isInClient()) {
-                        // ปรับข้อความ LIFF Message ให้แสดงข้อมูล Site และ หมายเหตุ เพิ่มตามที่คุณขอไว้
                         const summaryText = `✅ บันทึกบิลสำเร็จแล้ว\n` +
                                           `--------------------\n` +
                                           `👤 ผู้เบิก: ${payload.requesterName}\n` +
-                                          `📍 Site/งาน: ${payload.project || '-'}\n` +
-                                          `📝 หมายเหตุ: ${payload.remark || '-'}\n` +
                                           `🏢 ชื่อผู้ขาย: ${payload.sellerName}\n` +
                                           `📄 เลขที่บิล: ${payload.billNumber}\n` +
                                           `📅 วันที่: ${payload.billDate}\n` +
@@ -258,15 +223,10 @@
                     // ปิดหน้าต่างหลังจากส่งข้อความเสร็จ (รอ 2 วินาทีเพื่อให้ผู้ใช้เห็นสถานะ)
                     setTimeout(() => liff.closeWindow(), 2000);
                 } else {
-                    status.className = 'status-box status-error show';
                     status.innerText = "❌ ผิดพลาด: " + json.message;
                     btn.disabled = false;
                 }
-            } catch (e) { 
-                status.className = 'status-box status-error show';
-                status.innerText = "❌ การเชื่อมต่อล้มเหลว"; 
-                btn.disabled = false; 
-            }
+            } catch (e) { status.innerText = "❌ การเชื่อมต่อล้มเหลว"; btn.disabled = false; }
         }
     </script>
 </body>
