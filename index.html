@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Smart Billing LIFF V2.3 (High-Res AI)</title>
+    <title>Smart Billing LIFF V2</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
@@ -29,7 +29,7 @@
         .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 35px; height: 35px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         button { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 17px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 8px rgba(0,185,0,0.2); }
-        button:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+        button:active { transform: scale(0.98); }
         .status-msg { text-align: center; margin-top: 12px; font-size: 15px; min-height: 24px; font-weight: 500; }
         .ai-toggle-wrapper { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         #aiToggle { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
@@ -39,11 +39,11 @@
     <div class="app-container">
         <div class="header">
             <i class="fas fa-file-invoice-dollar fa-lg"></i>
-            <h3>Smart Billing V2.3</h3>
+            <h3>Smart Billing V2</h3>
         </div>
         
         <div class="ai-banner">
-            <b><i class="fas fa-robot"></i> AI OCR (High-Res)</b>
+            <b><i class="fas fa-robot"></i> AI OCR Auto-Fill</b>
             <div class="ai-toggle-wrapper" onclick="document.getElementById('aiToggle').click(); event.stopPropagation();">
                 <input type="checkbox" id="aiToggle" checked onclick="event.stopPropagation();">
             </div>
@@ -53,7 +53,7 @@
             <div class="file-box" onclick="document.getElementById('billFile').click()">
                 <div class="loading-overlay" id="aiLoading">
                     <div class="spinner"></div>
-                    <div id="aiLoadingText" style="margin-top:12px; color:var(--primary); font-weight:bold;">กำลังประมวลผลรูปภาพ...</div>
+                    <div style="margin-top:12px; color:var(--primary); font-weight:bold;">AI กำลังอ่านข้อมูล...</div>
                 </div>
                 <i class="fas fa-camera fa-3x"></i><br>
                 <span id="fileNameDisplay" style="font-weight: 500; color: #666;">กดถ่ายรูปหรืออัพโหลดใบเสร็จ</span>
@@ -101,7 +101,7 @@
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwZa0RYA0IwEPsHvzikLLJww-VCOeDLQ2I1otIwP-HLQh1X5UGVTT1EbAeBOmzBYocE/exec"; 
         const LIFF_ID = "2009018471-9nBUmUak";
         let userData = { userId: "", displayName: "", email: "" };
-        let currentFileBase64 = "", currentFileType = "image/jpeg";
+        let currentFileBase64 = "", currentFileType = "";
 
         async function initLIFF() {
             try {
@@ -140,46 +140,26 @@
             document.getElementById('totalAmount').value = (v1 + v2).toFixed(2);
         }
 
-        // --- ปรับปรุง: ฟังก์ชันบีบอัดรูปภาพให้ชัดขึ้น (High-Res AI Ready) ---
+        // --- เพิ่มฟังก์ชันบีบอัดภาพแบบ High-Res เพื่อให้ AI อ่านได้แม่นยำ ---
         async function compressImage(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onload = (event) => {
+                reader.onload = (e) => {
                     const img = new Image();
-                    img.src = event.target.result;
+                    img.src = e.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-                        
-                        // เพิ่ม MAX_SIZE เป็น 2000px เพื่อความคมชัดสูง
-                        const MAX_SIZE = 2000; 
-
-                        if (width > height) {
-                            if (width > MAX_SIZE) {
-                                height *= MAX_SIZE / width;
-                                width = MAX_SIZE;
-                            }
-                        } else {
-                            if (height > MAX_SIZE) {
-                                width *= MAX_SIZE / height;
-                                height = MAX_SIZE;
-                            }
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
+                        let width = img.width, height = img.height;
+                        const MAX_SIZE = 2000; // เพิ่มเป็น 2000px เพื่อความคมชัดสูง
+                        if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
+                        else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
+                        canvas.width = width; canvas.height = height;
                         const ctx = canvas.getContext('2d');
-                        
-                        // ใช้ Smoothing สำหรับการย่อรูป
                         ctx.imageSmoothingEnabled = true;
                         ctx.imageSmoothingQuality = 'high';
                         ctx.drawImage(img, 0, 0, width, height);
-                        
-                        // เพิ่ม Quality เป็น 0.85 (ชัดมากแต่ยังช่วยลดขนาดไฟล์ได้)
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-                        resolve(dataUrl);
+                        resolve(canvas.toDataURL('image/jpeg', 0.85)); // คุณภาพ 0.85 ชัดแต่ไฟล์ไม่ใหญ่
                     };
                 };
             });
@@ -187,26 +167,17 @@
 
         async function handleFileChange(input) {
             const file = input.files[0]; if (!file) return;
-            document.getElementById('fileNameDisplay').innerText = "กำลังปรับความคมชัด...";
+            document.getElementById('fileNameDisplay').innerText = file.name;
             document.getElementById('aiLoading').style.display = 'flex';
-            document.getElementById('aiLoadingText').innerText = "กำลังประมวลผลรูปภาพ...";
 
             try {
+                // บีบอัดภาพก่อนส่ง
                 const compressedDataUrl = await compressImage(file);
                 currentFileBase64 = compressedDataUrl.split(',')[1];
                 currentFileType = "image/jpeg";
-                document.getElementById('fileNameDisplay').innerText = "รูปภาพพร้อม (High-Res Mode)";
 
                 if (document.getElementById('aiToggle').checked) {
-                    document.getElementById('aiLoadingText').innerText = "AI กำลังวิเคราะห์ข้อมูล...";
-                    const res = await fetch(GAS_WEB_APP_URL, { 
-                        method: "POST", 
-                        body: JSON.stringify({ 
-                            action: "analyze", 
-                            base64: currentFileBase64, 
-                            type: currentFileType 
-                        })
-                    });
+                    const res = await fetch(GAS_WEB_APP_URL, { method: "POST", body: JSON.stringify({ action: "analyze", base64: currentFileBase64, type: currentFileType })});
                     const json = await res.json();
                     if (json.success) {
                         const d = json.data;
@@ -218,16 +189,10 @@
                         document.getElementById('vatAmount').value = d.vatAmount || 0;
                         document.getElementById('expenseNote').value = d.expenseNote || "";
                         calculateTotal();
-                    } else {
-                        alert("AI อ่านไม่ออก: " + json.message);
                     }
                 }
-            } catch (e) { 
-                console.error(e);
-                alert("Error: " + e.message);
-            } finally {
-                document.getElementById('aiLoading').style.display = 'none';
-            }
+            } catch (e) { console.error(e); }
+            document.getElementById('aiLoading').style.display = 'none';
         }
 
         async function submitForm() {
@@ -249,10 +214,8 @@
                 requesterName: document.getElementById('requesterName').value,
                 expenseNote: document.getElementById('expenseNote').value,
                 approve_request: document.getElementById('approve_request').value,
-                fileBase64: currentFileBase64, 
-                fileType: currentFileType,
-                lineUserId: userData.userId, 
-                lineEmail: userData.email
+                fileBase64: currentFileBase64, fileType: currentFileType,
+                lineUserId: userData.userId, lineEmail: userData.email
             };
 
             try {
@@ -260,9 +223,23 @@
                 const json = await res.json();
                 if (json.success) {
                     status.innerHTML = "<b style='color:green;'>✅ บันทึกสำเร็จ!</b>";
+                    
+                    // --- คืนค่า Summary Text ตามเวอร์ชันต้นฉบับของคุณ 100% ---
                     if (liff.isInClient()) {
-                        const summaryText = `✅ บันทึกบิลสำเร็จแล้ว\n🏢 ร้าน: ${payload.sellerName}\n📄 เลขที่: ${payload.billNumber}\n💰 ยอดรวม: ${payload.totalAmount} ฿`;
-                        try { await liff.sendMessages([{ type: 'text', text: summaryText }]); } catch (err) {}
+                        const summaryText = `✅ บันทึกบิลสำเร็จแล้ว\n` +
+                                          `--------------------\n` +
+                                          `👤 ผู้เบิก: ${payload.requesterName}\n` +
+					                                `📍 Site/งาน: ${payload.projectCode}\n` +
+                                          `🏢 ชื่อผู้ขาย: ${payload.sellerName}\n` +
+                                          `📄 เลขที่บิล: ${payload.billNumber}\n` +
+                                          `📅 วันที่: ${payload.billDate}\n` +
+                                          `💰 ยอดก่อน VAT: ${payload.preVat} ฿\n` +
+                                          `🧧 VAT: ${payload.vatAmount} ฿\n` +
+                                          `--------------------\n` +
+                                          `💰 ยอดรวมสุทธิ: ${payload.totalAmount} ฿`;
+                        try {
+                            await liff.sendMessages([{ type: 'text', text: summaryText }]);
+                        } catch (err) { console.error("Send message failed", err); }
                     }
                     setTimeout(() => liff.closeWindow(), 500);
                 } else {
