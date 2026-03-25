@@ -24,9 +24,11 @@
         .preview-img { max-width: 100%; max-height: 200px; border-radius: 8px; display: none; margin: 0 auto 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         
         .form-section { background: white; }
+        /* กลับมาใช้ Grid ต้นฉบับเดิมของคุณ */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
         .full-width { grid-column: span 2; }
         
+        /* กลับมาใช้ CSS ต้นฉบับเดิมของคุณ */
         .input-group { display: flex; flex-direction: column; }
         .label { font-size: 12px; color: #666; margin-bottom: 4px; font-weight: 500; }
         input, select { padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; background: #fff; transition: 0.2s; }
@@ -73,7 +75,7 @@
                 <div class="input-group"><div class="label">VAT (บาท)</div><input type="number" id="vatAmount" step="0.01" required></div>
                 <div class="input-group full-width"><div class="label">ยอดรวมสุทธิ (บาท)</div><input type="number" id="totalAmount" step="0.01" required readonly style="background:#e9ecef; font-weight:bold; color:var(--primary);"></div>
                 
-                <!-- แก้ไข UI ตามที่ร้องขอ -->
+                <!-- จัดลำดับใหม่และขยายเต็มบรรทัดตามที่ร้องขอ -->
                 <div class="input-group full-width"><div class="label">Site/งาน</div><input type="text" id="project" placeholder="-"></div>
                 <div class="input-group full-width"><div class="label">หมายเหตุ/รายการสินค้า</div><input type="text" id="remark" placeholder="-"></div>
                 <div class="input-group"><div class="label">ชื่อผู้เบิก</div><input type="text" id="requesterName" required></div>
@@ -97,6 +99,7 @@
         let base64Image = "";
         let lineProfile = { displayName: "LIFF User", userId: "Uxxxx" };
 
+        // ย้อนกลับ Code LIFF ให้เป็นต้นฉบับเดิมของคุณ
         async function initApp() {
             try {
                 await liff.init({ liffId: "2006742548-W8Zxx2jE" });
@@ -113,6 +116,7 @@
         }
         initApp();
 
+        // ย้อนกลับ Code ดึงรายชื่อผู้อนุมัติให้เป็นต้นฉบับเดิมของคุณ
         async function loadApprovers() {
             try {
                 const res = await fetch(SCRIPT_URL + "?action=getApprovers");
@@ -231,7 +235,7 @@
                     status.innerHTML = '<i class="fas fa-check-circle"></i> บันทึกสำเร็จ!';
                     
                     if (liff.isInClient()) {
-                        // ปรับปรุงข้อความ LIFF Message ตามที่ร้องขอ
+                        // ปรับข้อความ LIFF Message ให้แสดงข้อมูล Site และ หมายเหตุ เพิ่มตามที่คุณขอไว้
                         const summaryText = `✅ บันทึกบิลสำเร็จแล้ว\n` +
                                           `--------------------\n` +
                                           `👤 ผู้เบิก: ${payload.requesterName}\n` +
