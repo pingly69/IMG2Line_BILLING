@@ -208,7 +208,7 @@
                         const summaryText = `✅ บันทึกบิลสำเร็จแล้ว\n` +
                                           `--------------------\n` +
                                           `👤 ผู้เบิก: ${payload.requesterName}\n` +
-					    `📍 Site/งาน: ${payload.projectCode}\n` +
+					                                `📍 Site/งาน: ${payload.projectCode}\n` +
                                           `🏢 ชื่อผู้ขาย: ${payload.sellerName}\n` +
                                           `📄 เลขที่บิล: ${payload.billNumber}\n` +
                                           `📅 วันที่: ${payload.billDate}\n` +
@@ -223,8 +223,8 @@
                         }
                     }
                     
-                    // ปิดหน้าต่างหลังจากส่งข้อความเสร็จ (รอ 1 วินาทีเพื่อให้ผู้ใช้เห็นสถานะ)
-                    setTimeout(() => liff.closeWindow(), 1000);
+                    // ปิดหน้าต่างหลังจากส่งข้อความเสร็จ (รอ 0.5 วินาทีเพื่อให้ผู้ใช้เห็นสถานะ)
+                    setTimeout(() => liff.closeWindow(), 500);
                 } else {
                     status.innerText = "❌ ผิดพลาด: " + json.message;
                     btn.disabled = false;
