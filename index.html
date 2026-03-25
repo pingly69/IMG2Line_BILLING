@@ -82,7 +82,7 @@
                 <div class="field"><label>ชื่อผู้เบิก</label><input type="text" id="requesterName" required></div>
             </div>
             <div class="row">
-                <div class="field"><label>Site/งาน</label><input type="text" id="projectCode" placeholder="รหัสโครงการ" required></div>
+                <div class="field"><label>Project</label><input type="text" id="projectCode" placeholder="รหัสโครงการ" required></div>
             </div>
             <div class="row"><div class="field"><label>หมายเหตุ / รายการสินค้า</label><input type="text" id="expenseNote" placeholder="ระบุเพิ่มเติม..."></div></div>
             <div class="row">
@@ -189,7 +189,7 @@
                 preVat: document.getElementById('preVat').value,
                 vatAmount: document.getElementById('vatAmount').value,
                 totalAmount: document.getElementById('totalAmount').value,
-                project: document.getElementById('project').value,
+                projectCode: document.getElementById('projectCode').value,
                 requesterName: document.getElementById('requesterName').value,
                 expenseNote: document.getElementById('expenseNote').value,
                 approve_request: document.getElementById('approve_request').value,
@@ -208,8 +208,6 @@
                         const summaryText = `✅ บันทึกบิลสำเร็จแล้ว\n` +
                                           `--------------------\n` +
                                           `👤 ผู้เบิก: ${payload.requesterName}\n` +
-                                          `📍 Site/งาน: ${payload.project}\n` +
-                                          `📝 รายการ: ${payload.expenseNote}\n` +
                                           `🏢 ชื่อผู้ขาย: ${payload.sellerName}\n` +
                                           `📄 เลขที่บิล: ${payload.billNumber}\n` +
                                           `📅 วันที่: ${payload.billDate}\n` +
