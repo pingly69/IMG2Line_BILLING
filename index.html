@@ -81,13 +81,28 @@
             
             <div class="input-group"><div class="input-label"><i class="fas fa-money-bill"></i> ยอดก่อน VAT</div><input type="number" id="preVat" step="0.01"></div>
             <div class="input-group"><div class="input-label"><i class="fas fa-percentage"></i> VAT 7%</div><input type="number" id="vatAmt" step="0.01"></div>
-            <div class="input-group"><div class="input-label"><i class="fas fa-money-bill-wave"></i> ยอดสุทธิ (Net)</div><input type="number" id="netAmt" step="0.01"></div>
+            <div class="input-group full-width"><div class="input-label"><i class="fas fa-money-bill-wave"></i> ยอดสุทธิ (Net)</div><input type="number" id="netAmt" step="0.01"></div>
             
-            <!-- ปรับแก้ UI ตาม Requirement: Site/งาน, หมายเหตุ, ผู้เบิก, ผู้อนุมัติ ขยายเต็ม 1 บรรทัด และเรียงลำดับใหม่ -->
-            <div class="input-group full-width"><div class="input-label"><i class="fas fa-project-diagram"></i> Site/งาน</div><input type="text" id="project"></div>
-            <div class="input-group full-width"><div class="input-label"><i class="fas fa-comment-dots"></i> หมายเหตุ/รายการสินค้า</div><textarea id="remark"></textarea></div>
-            <div class="input-group full-width"><div class="input-label"><i class="fas fa-user-tag"></i> ชื่อผู้เบิก</div><input type="text" id="reqName" readonly></div>
-            <div class="input-group full-width"><div class="input-label"><i class="fas fa-user-check"></i> ผู้อนุมัติ</div><select id="approver"><option value="">-- เลือกผู้อนุมัติ --</option></select></div>
+            <!-- เริ่มส่วนที่แก้ไข: ปรับลำดับและขนาดช่องข้อมูล -->
+            <div class="input-group full-width">
+                <div class="input-label"><i class="fas fa-project-diagram"></i> Site/งาน</div>
+                <input type="text" id="project">
+            </div>
+            
+            <div class="input-group full-width">
+                <div class="input-label"><i class="fas fa-comment-dots"></i> หมายเหตุ/รายการสินค้า</div>
+                <textarea id="remark"></textarea>
+            </div>
+            
+            <div class="input-group full-width">
+                <div class="input-label"><i class="fas fa-user-tag"></i> ชื่อผู้เบิก</div>
+                <input type="text" id="reqName" readonly>
+            </div>
+            
+            <div class="input-group full-width">
+                <div class="input-label"><i class="fas fa-user-check"></i> ผู้อนุมัติ</div>
+                <select id="approver"><option value="">-- เลือกผู้อนุมัติ --</option></select>
+            </div>
         </div>
 
         <div class="footer">
@@ -97,14 +112,13 @@
     </div>
 
     <script>
-        // === ตั้งค่า Web App URL ของคุณที่นี่ ===
+        // === คงค่าเดิมจากต้นฉบับ html_1.txt ===
         const GAS_URL = "https://script.google.com/macros/s/AKfycbzQ7R1YxLgW5e258rWv1yv-z0U5YgK56r-t6pBwR9O3X01v_0X6M/exec";
-        const LIFF_ID = "2006935213-kQZ0b0nJ"; // เปลี่ยนเป็น LIFF ID ของคุณ
+        const LIFF_ID = "2006935213-kQZ0b0nJ"; 
         
         let fileBase64 = "";
         let lineProfile = { displayName: "ไม่ระบุ", userId: "ไม่ระบุ" };
 
-        // 1. Initialize LIFF
         async function initLiff() {
             try {
                 await liff.init({ liffId: LIFF_ID });
@@ -124,7 +138,6 @@
         }
         initLiff();
 
-        // 2. ดึงรายชื่อผู้อนุมัติจาก GAS
         async function loadApprovers() {
             try {
                 const res = await fetch(GAS_URL + "?action=getApprovers");
@@ -140,7 +153,6 @@
             }
         }
 
-        // 3. จัดการการอัปโหลดรูปภาพและเรียก AI (ฝั่ง GAS)
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -170,7 +182,6 @@
                         document.getElementById('taxId').value = data.data.taxId || '';
                         document.getElementById('billNo').value = data.data.billNumber || '';
                         
-                        // แปลงวันที่ YYYY-MM-DD สำหรับ input type="date"
                         let dateVal = data.data.billDate || '';
                         if (dateVal.includes('/')) {
                             let parts = dateVal.split('/');
@@ -192,7 +203,7 @@
                     console.error("AI Scan Error:", err);
                     document.getElementById('statusMsg').innerText = "❌ อ่านข้อมูลอัตโนมัติล้มเหลว กรุณากรอกเอง";
                     document.getElementById('statusMsg').style.color = "red";
-                    saveBtn.disabled = false; // อนุญาตให้กรอกมือและส่งได้
+                    saveBtn.disabled = false;
                 } finally {
                     loading.style.display = 'none';
                 }
@@ -200,7 +211,6 @@
             reader.readAsDataURL(file);
         });
 
-        // 4. บันทึกข้อมูล
         document.getElementById('saveBtn').addEventListener('click', async function() {
             if (!document.getElementById('sellerName').value || !document.getElementById('netAmt').value) {
                 alert("กรุณาระบุชื่อผู้ขาย และยอดสุทธิ");
@@ -217,7 +227,6 @@
             status.innerText = "⏳ กำลังบันทึกข้อมูล...";
             status.style.color = "orange";
 
-            // แปลงวันที่กลับเป็น DD/MM/YYYY สำหรับเก็บลง Sheet
             let rawDate = document.getElementById('docDate').value;
             let formattedDate = rawDate;
             if (rawDate) {
@@ -253,9 +262,8 @@
                     status.innerText = "✅ บันทึกสำเร็จ! ส่งแจ้งเตือนแล้ว";
                     status.style.color = "var(--primary)";
                     
-                    // ส่งข้อความกลับไปที่ห้องแชท (ถ้าอยู่ใน LIFF)
-                    // ปรับแก้ เพิ่ม Site/งาน และ รายการ เข้าไปใน Message
                     if (liff.isInClient()) {
+                        // เพิ่มข้อมูล Site/งาน และ รายการสินค้า ลงใน Message
                         let summaryText = `✅ บันทึกข้อมูลสำเร็จแล้ว\n` +
                                           `--------------------\n` +
                                           `👤 ผู้เบิก: ${payload.requesterName}\n` +
@@ -275,8 +283,6 @@
                             console.error("Send message failed", err);
                         }
                     }
-                    
-                    // ปิดหน้าต่างหลังจากส่งข้อความเสร็จ (รอ 2 วินาทีเพื่อให้ผู้ใช้เห็นสถานะ)
                     setTimeout(() => liff.closeWindow(), 2000);
                 } else {
                     status.innerText = "❌ ผิดพลาด: " + json.message;
