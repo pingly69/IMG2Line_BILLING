@@ -190,7 +190,6 @@
                 vatAmount: document.getElementById('vatAmount').value,
                 totalAmount: document.getElementById('totalAmount').value,
                 project: document.getElementById('project').value,
-                remark: document.getElementById('remark').value,
                 requesterName: document.getElementById('requesterName').value,
                 expenseNote: document.getElementById('expenseNote').value,
                 approve_request: document.getElementById('approve_request').value,
@@ -209,6 +208,8 @@
                         const summaryText = `✅ บันทึกบิลสำเร็จแล้ว\n` +
                                           `--------------------\n` +
                                           `👤 ผู้เบิก: ${payload.requesterName}\n` +
+                                          `📍 Site/งาน: ${payload.project}\n` +
+                                          `📝 รายการ: ${payload.expenseNote}\n` +
                                           `🏢 ชื่อผู้ขาย: ${payload.sellerName}\n` +
                                           `📄 เลขที่บิล: ${payload.billNumber}\n` +
                                           `📅 วันที่: ${payload.billDate}\n` +
