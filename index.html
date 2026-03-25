@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Smart Billing LIFF V2.2 (Speed Optimized)</title>
+    <title>Smart Billing LIFF V2.3 (High-Res AI)</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
@@ -39,11 +39,11 @@
     <div class="app-container">
         <div class="header">
             <i class="fas fa-file-invoice-dollar fa-lg"></i>
-            <h3>Smart Billing V2.2</h3>
+            <h3>Smart Billing V2.3</h3>
         </div>
         
         <div class="ai-banner">
-            <b><i class="fas fa-robot"></i> AI OCR Auto-Fill</b>
+            <b><i class="fas fa-robot"></i> AI OCR (High-Res)</b>
             <div class="ai-toggle-wrapper" onclick="document.getElementById('aiToggle').click(); event.stopPropagation();">
                 <input type="checkbox" id="aiToggle" checked onclick="event.stopPropagation();">
             </div>
@@ -101,7 +101,7 @@
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwZa0RYA0IwEPsHvzikLLJww-VCOeDLQ2I1otIwP-HLQh1X5UGVTT1EbAeBOmzBYocE/exec"; 
         const LIFF_ID = "2009018471-9nBUmUak";
         let userData = { userId: "", displayName: "", email: "" };
-        let currentFileBase64 = "", currentFileType = "image/jpeg"; // Default to compressed jpeg
+        let currentFileBase64 = "", currentFileType = "image/jpeg";
 
         async function initLIFF() {
             try {
@@ -140,7 +140,7 @@
             document.getElementById('totalAmount').value = (v1 + v2).toFixed(2);
         }
 
-        // --- NEW: ฟังก์ชันบีบอัดรูปภาพ (Optimized for Speed) ---
+        // --- ปรับปรุง: ฟังก์ชันบีบอัดรูปภาพให้ชัดขึ้น (High-Res AI Ready) ---
         async function compressImage(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -152,7 +152,9 @@
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-                        const MAX_SIZE = 1200; // ลดขนาดด้านที่ยาวที่สุดเหลือ 1200px
+                        
+                        // เพิ่ม MAX_SIZE เป็น 2000px เพื่อความคมชัดสูง
+                        const MAX_SIZE = 2000; 
 
                         if (width > height) {
                             if (width > MAX_SIZE) {
@@ -169,10 +171,14 @@
                         canvas.width = width;
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
+                        
+                        // ใช้ Smoothing สำหรับการย่อรูป
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // บีบอัดเป็น JPEG คุณภาพ 0.7 (70%)
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                        // เพิ่ม Quality เป็น 0.85 (ชัดมากแต่ยังช่วยลดขนาดไฟล์ได้)
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
                         resolve(dataUrl);
                     };
                 };
@@ -181,19 +187,18 @@
 
         async function handleFileChange(input) {
             const file = input.files[0]; if (!file) return;
-            document.getElementById('fileNameDisplay').innerText = "กำลังย่อขนาดรูปภาพ...";
+            document.getElementById('fileNameDisplay').innerText = "กำลังปรับความคมชัด...";
             document.getElementById('aiLoading').style.display = 'flex';
-            document.getElementById('aiLoadingText').innerText = "กำลังบีบอัดรูปภาพ...";
+            document.getElementById('aiLoadingText').innerText = "กำลังประมวลผลรูปภาพ...";
 
             try {
-                // บีบอัดก่อนเสมอ
                 const compressedDataUrl = await compressImage(file);
                 currentFileBase64 = compressedDataUrl.split(',')[1];
                 currentFileType = "image/jpeg";
-                document.getElementById('fileNameDisplay').innerText = "รูปภาพพร้อมใช้งาน (บีบอัดแล้ว)";
+                document.getElementById('fileNameDisplay').innerText = "รูปภาพพร้อม (High-Res Mode)";
 
                 if (document.getElementById('aiToggle').checked) {
-                    document.getElementById('aiLoadingText').innerText = "AI กำลังอ่านข้อมูล...";
+                    document.getElementById('aiLoadingText').innerText = "AI กำลังวิเคราะห์ข้อมูล...";
                     const res = await fetch(GAS_WEB_APP_URL, { 
                         method: "POST", 
                         body: JSON.stringify({ 
@@ -213,6 +218,8 @@
                         document.getElementById('vatAmount').value = d.vatAmount || 0;
                         document.getElementById('expenseNote').value = d.expenseNote || "";
                         calculateTotal();
+                    } else {
+                        alert("AI อ่านไม่ออก: " + json.message);
                     }
                 }
             } catch (e) { 
@@ -227,7 +234,7 @@
             const form = document.getElementById('taxForm');
             if (!form.checkValidity()) { form.reportValidity(); return; }
             const btn = document.getElementById('submitBtn'); btn.disabled = true;
-            const status = document.getElementById('status'); status.innerText = "⏳ กำลังบันทึกข้อมูล (ขนาดเล็ก)...";
+            const status = document.getElementById('status'); status.innerText = "⏳ กำลังบันทึกข้อมูล...";
 
             const payload = {
                 taxId: document.getElementById('taxId').value,
@@ -253,19 +260,9 @@
                 const json = await res.json();
                 if (json.success) {
                     status.innerHTML = "<b style='color:green;'>✅ บันทึกสำเร็จ!</b>";
-                    
                     if (liff.isInClient()) {
-                        const summaryText = `✅ บันทึกบิลสำเร็จแล้ว\n` +
-                                          `--------------------\n` +
-                                          `👤 ผู้เบิก: ${payload.requesterName}\n` +
-					                      `📍 Site/งาน: ${payload.projectCode}\n` +
-                                          `🏢 ชื่อผู้ขาย: ${payload.sellerName}\n` +
-                                          `📄 เลขที่บิล: ${payload.billNumber}\n` +
-                                          `📅 วันที่: ${payload.billDate}\n` +
-                                          `💰 ยอดสุทธิ: ${payload.totalAmount} ฿`;
-                        try {
-                            await liff.sendMessages([{ type: 'text', text: summaryText }]);
-                        } catch (err) {}
+                        const summaryText = `✅ บันทึกบิลสำเร็จแล้ว\n🏢 ร้าน: ${payload.sellerName}\n📄 เลขที่: ${payload.billNumber}\n💰 ยอดรวม: ${payload.totalAmount} ฿`;
+                        try { await liff.sendMessages([{ type: 'text', text: summaryText }]); } catch (err) {}
                     }
                     setTimeout(() => liff.closeWindow(), 500);
                 } else {
