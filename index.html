@@ -57,7 +57,7 @@
                 </div>
                 <i class="fas fa-camera fa-3x"></i><br>
                 <span id="fileNameDisplay" style="font-weight: 500; color: #666;">กดถ่ายรูปหรืออัพโหลดใบเสร็จ</span>
-                <input type="file" id="billFile" accept="image/*" style="display:none;" onchange="handleFileChange(this)">
+                <input type="file" id="billFile" accept="image/*" style="display:none;" capture="environment"  onchange="handleFileChange(this)">
             </div>
 
             <div class="row">
@@ -223,8 +223,8 @@
                         }
                     }
                     
-                    // ปิดหน้าต่างหลังจากส่งข้อความเสร็จ (รอ 2 วินาทีเพื่อให้ผู้ใช้เห็นสถานะ)
-                    setTimeout(() => liff.closeWindow(), 2000);
+                    // ปิดหน้าต่างหลังจากส่งข้อความเสร็จ (รอ 1 วินาทีเพื่อให้ผู้ใช้เห็นสถานะ)
+                    setTimeout(() => liff.closeWindow(), 1000);
                 } else {
                     status.innerText = "❌ ผิดพลาด: " + json.message;
                     btn.disabled = false;
