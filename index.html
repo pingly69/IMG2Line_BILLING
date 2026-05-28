@@ -183,6 +183,10 @@
                         const d = json.data;
                         document.getElementById('taxId').value = d.taxId || "";
                         document.getElementById('sellerName').value = d.sellerName || "";
+
+                        // Branch code modify 27/5/2026
+                        document.getElementById('branchCode').value = d.branchCode || "00000";    
+						
                         document.getElementById('billNumber').value = d.billNumber || "";
                         document.getElementById('billDate').value = d.billDate || "";
                         document.getElementById('preVat').value = d.preVat || 0;
